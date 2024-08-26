@@ -1,0 +1,39 @@
+
+function Factors = GetFactorGeneralized_NL(IMG,m,phi,SpaFreqX,SpaFreqY,dP)
+
+% dP -----delPhase
+[M,N] = size(IMG);
+% M = upNPixel; N = upNPixel;
+u0 = (2*pi*SpaFreqX)/N;
+v0 = (2*pi*SpaFreqY)/M;
+% r = -N/2+1/2:N/2-1/2;
+% c = -M/2+1/2:M/2-1/2;
+% r = 0:N-1;
+% c = 0:M-1;
+r = single(-0.5:N-1.5);
+c = single(-0.5:M-1.5);
+[R, C] = meshgrid(r, c);
+% m1 = m(1); m2 = m(2);
+m1 = m(1); m2 = m(2);
+A = [1, 1, 1, 1, 1; 1, cos(dP), cos(2*dP),cos(3*dP),cos(4*dP);...
+        0, sin(dP), sin(2*dP),sin(3*dP),sin(4*dP);...
+            1, cos(2*dP), cos(4*dP),cos(6*dP),cos(8*dP);...
+                0, sin(2*dP), sin(4*dP),sin(6*dP),sin(8*dP)];
+coef = inv(A);
+Factors(:,:,1) = coef(1,1)+ coef(1,2)*cos(u0*R+v0*C+phi)/m1+...            % JSFR sup equ 13
+    coef(1,3)*sin(u0*R+v0*C+phi)/m1+coef(1,4)*cos(2*(u0*R+v0*C+phi))/m2+...
+    coef(1,5)*sin(2*(u0*R+v0*C+phi))/m2;  
+Factors(:,:,2) = coef(2,1)+ coef(2,2)*cos(u0*R+v0*C+phi)/m1+...
+    coef(2,3)*sin(u0*R+v0*C+phi)/m1+coef(2,4)*cos(2*(u0*R+v0*C+phi))/m2+...
+    coef(2,5)*sin(2*(u0*R+v0*C+phi))/m2;
+Factors(:,:,3) = coef(3,1)+ coef(3,2)*cos(u0*R+v0*C+phi)/m1+...
+    coef(3,3)*sin(u0*R+v0*C+phi)/m1+coef(3,4)*cos(2*(u0*R+v0*C+phi))/m2+...
+    coef(3,5)*sin(2*(u0*R+v0*C+phi))/m2;
+Factors(:,:,4) = coef(4,1)+ coef(4,2)*cos(u0*R+v0*C+phi)/m1+...
+    coef(4,3)*sin(u0*R+v0*C+phi)/m1+coef(4,4)*cos(2*(u0*R+v0*C+phi))/m2+...
+    coef(4,5)*sin(2*(u0*R+v0*C+phi))/m2;
+Factors(:,:,5) = coef(5,1)+coef(5,2)*cos(u0*R+v0*C+phi)/m1+...
+    coef(5,3)*sin(u0*R+v0*C+phi)/m1+coef(5,4)*cos(2*(u0*R+v0*C+phi))/m2+...
+    coef(5,5)*sin(2*(u0*R+v0*C+phi))/m2;
+
+end
